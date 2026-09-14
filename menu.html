@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HONG Coffee — Menu & Handcrafted Beverages</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        coffee: {
+                            50: '#fdf8f5', 100: '#f9eee6', 200: '#f0d9cc',
+                            300: '#e2bc49', 600: '#8c533e', 800: '#4a2e1b',
+                            900: '#2c1810', dark: '#1a0e09',
+                        }
+                    },
+                    fontFamily: { sans: ['Poppins', 'sans-serif'], serif: ['Playfair Display', 'serif'] }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-coffee-50 dark:bg-coffee-dark text-coffee-900 dark:text-coffee-100 font-sans transition-colors duration-300">
+
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-3"></div>
+
+    <!-- Shopping Cart Modal -->
+    <div id="cart-modal" class="fixed inset-0 z-50 overflow-hidden hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onclick="toggleCart()"></div>
+        <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-white dark:bg-coffee-900 shadow-2xl flex flex-col">
+                <div class="p-6 border-b border-coffee-200 dark:border-coffee-800 flex items-center justify-between">
+                    <h2 class="text-xl font-serif font-bold text-coffee-800 dark:text-coffee-200"><i class="fa-solid fa-bag-shopping mr-2 text-coffee-300"></i> Your Cart</h2>
+                    <button onclick="toggleCart()" class="text-coffee-600 dark:text-coffee-300 text-xl font-bold">&times;</button>
+                </div>
+                <div id="cart-items-container" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
+                <div class="p-6 border-t border-coffee-200 dark:border-coffee-800 bg-coffee-50 dark:bg-coffee-dark/50">
+                    <div class="flex justify-between mb-2 text-sm"><span>Subtotal</span><span id="cart-subtotal">$0.00</span></div>
+                    <div class="flex justify-between mb-4 text-sm font-semibold"><span>Total</span><span id="cart-total" class="text-coffee-600 dark:text-coffee-300">$0.00</span></div>
+                    <button onclick="checkout()" class="w-full bg-coffee-800 hover:bg-coffee-900 text-white py-3 rounded-xl font-medium shadow-md">Proceed to Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-coffee-950/90 backdrop-blur-md py-4 px-6 md:px-12 flex items-center justify-between shadow-lg">
+        <a href="index.html" class="flex items-center gap-2 text-2xl font-serif font-bold tracking-wider text-white">
+            <span class="text-coffee-300 text-3xl">☕</span> HONG <span class="font-light text-coffee-200 text-lg">COFFEE</span>
+        </a>
+        <div class="hidden md:flex items-center gap-8 font-medium text-white">
+            <a href="index.html" class="hover:text-coffee-300 transition">Home</a>
+            <a href="about.html" class="hover:text-coffee-300 transition">About</a>
+            <a href="menu.html" class="text-coffee-300 transition">Menu</a>
+            <a href="products.html" class="hover:text-coffee-300 transition">Products</a>
+            <a href="contact.html" class="hover:text-coffee-300 transition">Contact</a>
+        </div>
+        <div class="flex items-center gap-4 text-white">
+            <button onclick="toggleDarkMode()" class="p-2 hover:bg-white/10 rounded-full transition"><i class="fa-solid fa-moon dark:text-coffee-300" id="theme-icon"></i></button>
+            <button onclick="toggleCart()" class="relative p-2 hover:bg-white/10 rounded-full transition">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="cart-badge" class="absolute -top-1 -right-1 bg-coffee-300 text-coffee-950 font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center">0</span>
+            </button>
+            <button onclick="toggleMobileMenu()" class="md:hidden text-2xl p-2"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 z-50 bg-coffee-950/95 backdrop-blur-md flex flex-col items-center justify-center gap-6 text-xl text-white hidden">
+        <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-3xl text-coffee-300">&times;</button>
+        <a href="index.html" onclick="toggleMobileMenu()">Home</a>
+        <a href="about.html" onclick="toggleMobileMenu()">About</a>
+        <a href="menu.html" onclick="toggleMobileMenu()" class="text-coffee-300">Menu</a>
+        <a href="products.html" onclick="toggleMobileMenu()">Products</a>
+        <a href="contact.html" onclick="toggleMobileMenu()">Contact</a>
+    </div>
+
+    <!-- Menu Hero -->
+    <header class="pt-32 pb-12 px-6 max-w-7xl mx-auto text-center space-y-3">
+        <span class="text-coffee-600 dark:text-coffee-300 font-semibold text-sm uppercase tracking-wider">Handcrafted Menu</span>
+        <h1 class="text-4xl sm:text-6xl font-serif font-bold text-coffee-900 dark:text-coffee-100">Our Menu</h1>
+        <p class="text-gray-600 dark:text-gray-400 max-w-md mx-auto">Freshly Brewed. Perfectly Crafted.</p>
+    </header>
+
+    <!-- Category Navigation -->
+    <section class="pb-12 px-6 max-w-7xl mx-auto flex flex-wrap justify-center gap-3">
+        <button onclick="filterMenu('all')" class="menu-btn active bg-coffee-800 text-white px-6 py-2.5 rounded-full text-sm font-semibold transition shadow">All</button>
+        <button onclick="filterMenu('hot')" class="menu-btn bg-white dark:bg-coffee-900 text-coffee-800 dark:text-coffee-200 px-6 py-2.5 rounded-full text-sm font-semibold transition border border-coffee-200 dark:border-coffee-800">Hot Coffee</button>
+        <button onclick="filterMenu('iced')" class="menu-btn bg-white dark:bg-coffee-900 text-coffee-800 dark:text-coffee-200 px-6 py-2.5 rounded-full text-sm font-semibold transition border border-coffee-200 dark:border-coffee-800">Iced Coffee</button>
+        <button onclick="filterMenu('non-coffee')" class="menu-btn bg-white dark:bg-coffee-900 text-coffee-800 dark:text-coffee-200 px-6 py-2.5 rounded-full text-sm font-semibold transition border border-coffee-200 dark:border-coffee-800">Non-Coffee</button>
+        <button onclick="filterMenu('bakery')" class="menu-btn bg-white dark:bg-coffee-900 text-coffee-800 dark:text-coffee-200 px-6 py-2.5 rounded-full text-sm font-semibold transition border border-coffee-200 dark:border-coffee-800">Bakery & Desserts</button>
+    </section>
+
+    <!-- Menu Items Grid (12+ items) -->
+    <section class="pb-24 px-6 max-w-7xl mx-auto">
+        <div id="menu-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Populated dynamically via JS -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-coffee-950 text-white pt-16 pb-8 px-6 border-t border-coffee-800">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-coffee-900">
+            <div class="space-y-4">
+                <a href="index.html" class="text-2xl font-serif font-bold tracking-wider flex items-center gap-2">
+                    <span class="text-coffee-300 text-3xl">☕</span> HONG <span class="font-light text-coffee-200 text-lg">COFFEE</span>
+                </a>
+                <p class="text-gray-400 text-sm">“Brewed with Passion, Served with Love.”</p>
+            </div>
+            <div>
+                <h4 class="font-serif font-bold text-lg mb-4 text-coffee-300">Quick Links</h4>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li><a href="index.html" class="hover:text-coffee-300 transition">Home</a></li>
+                    <li><a href="about.html" class="hover:text-coffee-300 transition">About</a></li>
+                    <li><a href="menu.html" class="hover:text-coffee-300 transition">Menu</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-serif font-bold text-lg mb-4 text-coffee-300">Hours</h4>
+                <p class="text-sm text-gray-400">7:00 AM – 9:00 PM Daily</p>
+            </div>
+            <div>
+                <h4 class="font-serif font-bold text-lg mb-4 text-coffee-300">Location</h4>
+                <p class="text-sm text-gray-400">Phnom Penh, Cambodia</p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto pt-8 text-center text-xs text-gray-500">
+            &copy; 2026 HONG Coffee. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Menu Data & JS -->
+    <script>
+        const menuItems = [
+            { name: 'Espresso', category: 'hot', price: 2.00, desc: 'Rich, bold shot of pure artisan roasted coffee beans.', rating: 4.9, image: 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&q=80&w=500' },
+            { name: 'Americano', category: 'hot', price: 2.50, desc: 'Espresso shots topped with hot water for a clean cup.', rating: 4.8, image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=500' },
+            { name: 'Cappuccino', category: 'hot', price: 3.00, desc: 'Equal parts espresso, steamed milk, and airy foam.', rating: 4.9, image: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&q=80&w=500' },
+            { name: 'Café Latte', category: 'hot', price: 3.25, desc: 'Smooth espresso with silky microfoam milk.', rating: 4.7, image: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&q=80&w=500' },
+            { name: 'Iced Americano', category: 'iced', price: 2.75, desc: 'Refreshing chilled water over double espresso shots.', rating: 4.8, image: 'https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&q=80&w=500' },
+            { name: 'Iced Latte', category: 'iced', price: 3.25, desc: 'Chilled milk and espresso poured over crystal ice.', rating: 4.9, image: 'https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&q=80&w=500' },
+            { name: 'Caramel Iced Coffee', category: 'iced', price: 3.75, desc: 'Sweet caramel syrup, rich espresso, and cold milk.', rating: 4.9, image: 'https://images.unsplash.com/photo-1485808191679-5ed86fc0fb65?auto=format&fit=crop&q=80&w=500' },
+            { name: 'Mocha Frappe', category: 'iced', price: 4.00, desc: 'Blended espresso, chocolate, milk, and whipped cream.', rating: 4.8, image: 'https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?auto=format&fit=crop&q=80&w=500' },
+            { name: 'Chocolate', category: 'non-coffee', price: 3.00, desc: 'Rich Belgian cocoa steamed with creamy fresh milk.', rating: 4.7, image: 'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?auto=format&fit=crop&q=80&w=500' },
+            { name: 'Matcha Latte', category: 'non-coffee', price: 3.50, desc: 'Authentic Japanese ceremonial grade green tea matcha.', rating: 4.9, image: 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&q=80&w=500' },
+            { name: 'Croissant', category: 'bakery', price: 2.50, desc: 'Flaky, buttery French pastry baked fresh every morning.', rating: 4.9, image: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&q=80&w=500' },
+            { name: 'Chocolate Cake', category: 'bakery', price: 3.50, desc: 'Decadent moist chocolate sponge with rich fudge icing.', rating: 5.0, image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=500' }
+        ];
+
+        function renderMenu(category = 'all') {
+            const grid = document.getElementById('menu-grid');
+            if(!grid) return;
+            const filtered = category === 'all' ? menuItems : menuItems.filter(item => item.category === category);
+            
+            let html = '';
+            filtered.forEach(item => {
+                html += `
+                    <div class="bg-white dark:bg-coffee-900 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-4 flex flex-col justify-between border border-coffee-200 dark:border-coffee-800 group">
+                        <div>
+                            <div class="relative overflow-hidden rounded-xl mb-4 aspect-square">
+                                <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                <span class="absolute top-3 right-3 bg-white/90 dark:bg-coffee-900/90 text-xs px-2.5 py-1 rounded-full font-bold text-amber-500 shadow">⭐ ${item.rating}</span>
+                            </div>
+                            <h3 class="font-serif font-bold text-xl text-coffee-900 dark:text-coffee-100">${item.name}</h3>
+                            <p class="text-gray-500 dark:text-gray-400 text-xs mt-1 leading-relaxed">${item.desc}</p>
+                        </div>
+                        <div class="flex items-center justify-between mt-6 pt-4 border-t border-gray-100 dark:border-coffee-800">
+                            <span class="text-lg font-bold text-coffee-800 dark:text-coffee-200">$${item.price.toFixed(2)}</span>
+                            <button onclick="addToCart('${item.name}', ${item.price}, '${item.image}')" class="bg-coffee-800 hover:bg-coffee-900 text-white px-4 py-2 rounded-xl text-sm font-medium transition shadow">Add</button>
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        function filterMenu(category) {
+            document.querySelectorAll('.menu-btn').forEach(btn => {
+                btn.classList.remove('bg-coffee-800', 'text-white');
+                btn.classList.add('bg-white', 'dark:bg-coffee-900', 'text-coffee-800', 'dark:text-coffee-200', 'border', 'border-coffee-200', 'dark:border-coffee-800');
+            });
+            event.target.classList.remove('bg-white', 'dark:bg-coffee-900', 'text-coffee-800', 'dark:text-coffee-200', 'border');
+            event.target.classList.add('bg-coffee-800', 'text-white');
+            renderMenu(category);
+        }
+
+        // Cart & Toast Logic
+        let cart = JSON.parse(localStorage.getItem('hong_cart')) || [];
+        function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
+        function toggleCart() { document.getElementById('cart-modal').classList.toggle('hidden'); renderCart(); }
+        function addToCart(name, price, image) {
+            const existing = cart.find(i => i.name === name);
+            if (existing) existing.qty += 1; else cart.push({ name, price, image, qty: 1 });
+            localStorage.setItem('hong_cart', JSON.stringify(cart));
+            updateCartBadge();
+            showToast(`✓ ${name} added to your cart!`);
+        }
+        function removeFromCart(name) { cart = cart.filter(i => i.name !== name); localStorage.setItem('hong_cart', JSON.stringify(cart)); updateCartBadge(); renderCart(); }
+        function updateCartBadge() { const b = document.getElementById('cart-badge'); if(b) b.textContent = cart.reduce((s, i) => s + i.qty, 0); }
+        function renderCart() {
+            const container = document.getElementById('cart-items-container');
+            const subtotalEl = document.getElementById('cart-subtotal');
+            const totalEl = document.getElementById('cart-total');
+            if(!container) return;
+            if(cart.length === 0) { container.innerHTML = `<p class="text-gray-500 text-center py-10">Your cart is empty.</p>`; subtotalEl.textContent = '$0.00'; totalEl.textContent = '$0.00'; return; }
+            let html = '', subtotal = 0;
+            cart.forEach(item => {
+                subtotal += item.price * item.qty;
+                html += `<div class="flex items-center gap-4 bg-coffee-50 dark:bg-coffee-800/40 p-3 rounded-2xl"><img src="${item.image}" class="w-16 h-16 object-cover rounded-xl"><div class="flex-1"><h4 class="font-serif font-bold text-sm">${item.name}</h4><div class="text-xs text-coffee-600">$${item.price.toFixed(2)} x ${item.qty}</div></div><button onclick="removeFromCart('${item.name}')" class="text-red-500"><i class="fa-solid fa-trash"></i></button></div>`;
+            });
+            container.innerHTML = html; subtotalEl.textContent = `$${subtotal.toFixed(2)}`; totalEl.textContent = `$${subtotal.toFixed(2)}`;
+        }
+        function checkout() { alert('Order placed successfully!'); cart = []; localStorage.setItem('hong_cart', JSON.stringify(cart)); toggleCart(); updateCartBadge(); }
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            if(!container) return;
+            const toast = document.createElement('div');
+            toast.className = 'bg-coffee-900 text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 border border-coffee-300/40 text-sm';
+            toast.innerHTML = `<span class="text-coffee-300">☕</span> <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        function toggleDarkMode() { document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); }
+        renderMenu();
+        updateCartBadge();
+    </script>
+</body>
+</html>

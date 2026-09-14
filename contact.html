@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HONG Coffee — Contact Us & Location</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        coffee: {
+                            50: '#fdf8f5', 100: '#f9eee6', 200: '#f0d9cc',
+                            300: '#e2bc49', 600: '#8c533e', 800: '#4a2e1b',
+                            900: '#2c1810', dark: '#1a0e09',
+                        }
+                    },
+                    fontFamily: { sans: ['Poppins', 'sans-serif'], serif: ['Playfair Display', 'serif'] }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-coffee-50 dark:bg-coffee-dark text-coffee-900 dark:text-coffee-100 font-sans transition-colors duration-300">
+
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-3"></div>
+
+    <!-- Shopping Cart Modal -->
+    <div id="cart-modal" class="fixed inset-0 z-50 overflow-hidden hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onclick="toggleCart()"></div>
+        <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-white dark:bg-coffee-900 shadow-2xl flex flex-col">
+                <div class="p-6 border-b border-coffee-200 dark:border-coffee-800 flex items-center justify-between">
+                    <h2 class="text-xl font-serif font-bold text-coffee-800 dark:text-coffee-200"><i class="fa-solid fa-bag-shopping mr-2 text-coffee-300"></i> Your Cart</h2>
+                    <button onclick="toggleCart()" class="text-coffee-600 dark:text-coffee-300 text-xl font-bold">&times;</button>
+                </div>
+                <div id="cart-items-container" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
+                <div class="p-6 border-t border-coffee-200 dark:border-coffee-800 bg-coffee-50 dark:bg-coffee-dark/50">
+                    <div class="flex justify-between mb-2 text-sm"><span>Subtotal</span><span id="cart-subtotal">$0.00</span></div>
+                    <div class="flex justify-between mb-4 text-sm font-semibold"><span>Total</span><span id="cart-total" class="text-coffee-600 dark:text-coffee-300">$0.00</span></div>
+                    <button onclick="checkout()" class="w-full bg-coffee-800 hover:bg-coffee-900 text-white py-3 rounded-xl font-medium shadow-md">Proceed to Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-coffee-950/90 backdrop-blur-md py-4 px-6 md:px-12 flex items-center justify-between shadow-lg">
+        <a href="index.html" class="flex items-center gap-2 text-2xl font-serif font-bold tracking-wider text-white">
+            <span class="text-coffee-300 text-3xl">☕</span> HONG <span class="font-light text-coffee-200 text-lg">COFFEE</span>
+        </a>
+        <div class="hidden md:flex items-center gap-8 font-medium text-white">
+            <a href="index.html" class="hover:text-coffee-300 transition">Home</a>
+            <a href="about.html" class="hover:text-coffee-300 transition">About</a>
+            <a href="menu.html" class="hover:text-coffee-300 transition">Menu</a>
+            <a href="products.html" class="hover:text-coffee-300 transition">Products</a>
+            <a href="contact.html" class="text-coffee-300 transition">Contact</a>
+        </div>
+        <div class="flex items-center gap-4 text-white">
+            <button onclick="toggleDarkMode()" class="p-2 hover:bg-white/10 rounded-full transition"><i class="fa-solid fa-moon dark:text-coffee-300" id="theme-icon"></i></button>
+            <button onclick="toggleCart()" class="relative p-2 hover:bg-white/10 rounded-full transition">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="cart-badge" class="absolute -top-1 -right-1 bg-coffee-300 text-coffee-950 font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center">0</span>
+            </button>
+            <button onclick="toggleMobileMenu()" class="md:hidden text-2xl p-2"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 z-50 bg-coffee-950/95 backdrop-blur-md flex flex-col items-center justify-center gap-6 text-xl text-white hidden">
+        <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-3xl text-coffee-300">&times;</button>
+        <a href="index.html" onclick="toggleMobileMenu()">Home</a>
+        <a href="about.html" onclick="toggleMobileMenu()">About</a>
+        <a href="menu.html" onclick="toggleMobileMenu()">Menu</a>
+        <a href="products.html" onclick="toggleMobileMenu()">Products</a>
+        <a href="contact.html" onclick="toggleMobileMenu()" class="text-coffee-300">Contact</a>
+    </div>
+
+    <!-- Contact Hero -->
+    <header class="pt-32 pb-12 px-6 max-w-7xl mx-auto text-center space-y-3">
+        <span class="text-coffee-600 dark:text-coffee-300 font-semibold text-sm uppercase tracking-wider">Reach Out</span>
+        <h1 class="text-4xl sm:text-6xl font-serif font-bold text-coffee-900 dark:text-coffee-100">Get in Touch</h1>
+        <p class="text-gray-600 dark:text-gray-400 max-w-md mx-auto">We'd Love to Hear From You</p>
+    </header>
+
+    <!-- Contact Info & Form Section -->
+    <section class="py-12 px-6 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div class="space-y-8">
+            <div class="space-y-3">
+                <h2 class="text-3xl font-serif font-bold text-coffee-900 dark:text-coffee-100">Visit or Contact Us</h2>
+                <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Have a question about our menu, corporate orders, or events? Drop us a message or visit our flagship store in Phnom Penh.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="bg-white dark:bg-coffee-900 p-6 rounded-2xl shadow-sm border border-coffee-200 dark:border-coffee-800 space-y-2">
+                    <div class="text-coffee-600 dark:text-coffee-300 text-xl"><i class="fa-solid fa-location-dot"></i></div>
+                    <h3 class="font-bold text-base">Location</h3>
+                    <p class="text-xs text-gray-500">Phnom Penh, Cambodia</p>
+                </div>
+                <div class="bg-white dark:bg-coffee-900 p-6 rounded-2xl shadow-sm border border-coffee-200 dark:border-coffee-800 space-y-2">
+                    <div class="text-coffee-600 dark:text-coffee-300 text-xl"><i class="fa-solid fa-phone"></i></div>
+                    <h3 class="font-bold text-base">Phone</h3>
+                    <p class="text-xs text-gray-500">+855 23 888 999</p>
+                </div>
+                <div class="bg-white dark:bg-coffee-900 p-6 rounded-2xl shadow-sm border border-coffee-200 dark:border-coffee-800 space-y-2">
+                    <div class="text-coffee-600 dark:text-coffee-300 text-xl"><i class="fa-solid fa-envelope"></i></div>
+                    <h3 class="font-bold text-base">Email</h3>
+                    <p class="text-xs text-gray-500">hello@hongcoffee.com</p>
+                </div>
+                <div class="bg-white dark:bg-coffee-900 p-6 rounded-2xl shadow-sm border border-coffee-200 dark:border-coffee-800 space-y-2">
+                    <div class="text-coffee-600 dark:text-coffee-300 text-xl"><i class="fa-solid fa-clock"></i></div>
+                    <h3 class="font-bold text-base">Opening Hours</h3>
+                    <p class="text-xs text-gray-500">Mon – Sun: 7:00 AM – 9:00 PM</p>
+                </div>
+            </div>
+            <!-- Socials -->
+            <div class="space-y-3">
+                <h4 class="font-bold text-sm">Connect on Social Media</h4>
+                <div class="flex gap-3 text-white">
+                    <a href="#" class="w-10 h-10 rounded-full bg-coffee-800 flex items-center justify-center hover:bg-coffee-900 transition"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-coffee-800 flex items-center justify-center hover:bg-coffee-900 transition"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-coffee-800 flex items-center justify-center hover:bg-coffee-900 transition"><i class="fa-brands fa-telegram"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-coffee-800 flex items-center justify-center hover:bg-coffee-900 transition"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="bg-white dark:bg-coffee-900 p-8 rounded-3xl shadow-lg border border-coffee-200 dark:border-coffee-800">
+            <h3 class="text-2xl font-serif font-bold text-coffee-900 dark:text-coffee-100 mb-6">Send Us a Message</h3>
+            <form onsubmit="handleContactSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase mb-1">Full Name</label>
+                    <input type="text" id="contact-name" required placeholder="Dara Vicheka" class="w-full bg-coffee-50 dark:bg-coffee-dark px-4 py-3 rounded-xl border border-coffee-200 dark:border-coffee-800 text-sm focus:outline-none focus:ring-2 focus:ring-coffee-300">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase mb-1">Email Address</label>
+                    <input type="email" id="contact-email" required placeholder="dara@example.com" class="w-full bg-coffee-50 dark:bg-coffee-dark px-4 py-3 rounded-xl border border-coffee-200 dark:border-coffee-800 text-sm focus:outline-none focus:ring-2 focus:ring-coffee-300">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase mb-1">Phone Number</label>
+                    <input type="tel" id="contact-phone" placeholder="+855 XX XXX XXX" class="w-full bg-coffee-50 dark:bg-coffee-dark px-4 py-3 rounded-xl border border-coffee-200 dark:border-coffee-800 text-sm focus:outline-none focus:ring-2 focus:ring-coffee-300">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase mb-1">Subject</label>
+                    <input type="text" id="contact-subject" required placeholder="Inquiry about catering" class="w-full bg-coffee-50 dark:bg-coffee-dark px-4 py-3 rounded-xl border border-coffee-200 dark:border-coffee-800 text-sm focus:outline-none focus:ring-2 focus:ring-coffee-300">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase mb-1">Message</label>
+                    <textarea id="contact-msg" rows="4" required placeholder="Write your message here..." class="w-full bg-coffee-50 dark:bg-coffee-dark px-4 py-3 rounded-xl border border-coffee-200 dark:border-coffee-800 text-sm focus:outline-none focus:ring-2 focus:ring-coffee-300"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-coffee-800 hover:bg-coffee-900 text-white font-bold py-3.5 rounded-xl transition shadow-md">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Google Maps / Map Placeholder -->
+    <section class="py-12 px-6 max-w-7xl mx-auto">
+        <div class="rounded-3xl overflow-hidden shadow-lg h-96 border border-coffee-200 dark:border-coffee-800 relative">
+            <iframe title="Phnom Penh Map" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.516453982846!2d104.9160!3d11.5564!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDMzJzIzLjAiTiAxMDTCsDU0JzU3LjYiE!5e0!3m2!1sen!2skh!4v1650000000000!5m2!1sen!2skh" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+    </section>
+
+    <!-- FAQ Accordion Section -->
+    <section class="py-16 px-6 max-w-4xl mx-auto">
+        <div class="text-center space-y-3 mb-12">
+            <h2 class="text-3xl font-serif font-bold text-coffee-900 dark:text-coffee-100">Frequently Asked Questions</h2>
+            <p class="text-gray-600 dark:text-gray-400 text-sm">Got questions? We have answers.</p>
+        </div>
+        <div class="space-y-4">
+            <div class="bg-white dark:bg-coffee-900 rounded-2xl border border-coffee-200 dark:border-coffee-800 overflow-hidden shadow-sm">
+                <button onclick="toggleAccordion(this)" class="w-full p-6 text-left font-serif font-bold flex justify-between items-center text-coffee-900 dark:text-coffee-100">
+                    <span>What time does HONG Coffee open?</span>
+                    <i class="fa-solid fa-chevron-down transition-transform"></i>
+                </button>
+                <div class="faq-content hidden px-6 pb-6 text-sm text-gray-500 dark:text-gray-400">
+                    We are open every single day from 7:00 AM to 9:00 PM, including weekends and public holidays.
+                </div>
+            </div>
+            <div class="bg-white dark:bg-coffee-900 rounded-2xl border border-coffee-200 dark:border-coffee-800 overflow-hidden shadow-sm">
+                <button onclick="toggleAccordion(this)" class="w-full p-6 text-left font-serif font-bold flex justify-between items-center text-coffee-900 dark:text-coffee-100">
+                    <span>Do you offer delivery?</span>
+                    <i class="fa-solid fa-chevron-down transition-transform"></i>
+                </button>
+                <div class="faq-content hidden px-6 pb-6 text-sm text-gray-500 dark:text-gray-400">
+                    Yes! We offer fast delivery across Phnom Penh through our website checkout as well as major local delivery apps.
+                </div>
+            </div>
+            <div class="bg-white dark:bg-coffee-900 rounded-2xl border border-coffee-200 dark:border-coffee-800 overflow-hidden shadow-sm">
+                <button onclick="toggleAccordion(this)" class="w-full p-6 text-left font-serif font-bold flex justify-between items-center text-coffee-900 dark:text-coffee-100">
+                    <span>Can I order online?</span>
+                    <i class="fa-solid fa-chevron-down transition-transform"></i>
+                </button>
+                <div class="faq-content hidden px-6 pb-6 text-sm text-gray-500 dark:text-gray-400">
+                    Absolutely! You can browse our Menu and Products, add items to your cart, and place your order directly right here on our website.
+                </div>
+            </div>
+            <div class="bg-white dark:bg-coffee-900 rounded-2xl border border-coffee-200 dark:border-coffee-800 overflow-hidden shadow-sm">
+                <button onclick="toggleAccordion(this)" class="w-full p-6 text-left font-serif font-bold flex justify-between items-center text-coffee-900 dark:text-coffee-100">
+                    <span>Do you have high-speed Wi-Fi?</span>
+                    <i class="fa-solid fa-chevron-down transition-transform"></i>
+                </button>
+                <div class="faq-content hidden px-6 pb-6 text-sm text-gray-500 dark:text-gray-400">
+                    Yes, we provide complimentary high-speed fiber Wi-Fi for all customers working or studying at our café.
+                </div>
+            </div>
+            <div class="bg-white dark:bg-coffee-900 rounded-2xl border border-coffee-200 dark:border-coffee-800 overflow-hidden shadow-sm">
+                <button onclick="toggleAccordion(this)" class="w-full p-6 text-left font-serif font-bold flex justify-between items-center text-coffee-900 dark:text-coffee-100">
+                    <span>Can I reserve a table?</span>
+                    <i class="fa-solid fa-chevron-down transition-transform"></i>
+                </button>
+                <div class="faq-content hidden px-6 pb-6 text-sm text-gray-500 dark:text-gray-400">
+                    For groups and meetings, you can reserve tables in advance by calling us directly or messaging us on Telegram.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-coffee-950 text-white pt-16 pb-8 px-6 border-t border-coffee-800">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-coffee-900">
+            <div class="space-y-4">
+                <a href="index.html" class="text-2xl font-serif font-bold tracking-wider flex items-center gap-2">
+                    <span class="text-coffee-300 text-3xl">☕</span> HONG <span class="font-light text-coffee-200 text-lg">COFFEE</span>
+                </a>
+                <p class="text-gray-400 text-sm">“Brewed with Passion, Served with Love.”</p>
+            </div>
+            <div>
+                <h4 class="font-serif font-bold text-lg mb-4 text-coffee-300">Quick Links</h4>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li><a href="index.html" class="hover:text-coffee-300 transition">Home</a></li>
+                    <li><a href="products.html" class="hover:text-coffee-300 transition">Products</a></li>
+                    <li><a href="contact.html" class="hover:text-coffee-300 transition">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-serif font-bold text-lg mb-4 text-coffee-300">Hours</h4>
+                <p class="text-sm text-gray-400">7:00 AM – 9:00 PM Daily</p>
+            </div>
+            <div>
+                <h4 class="font-serif font-bold text-lg mb-4 text-coffee-300">Location</h4>
+                <p class="text-sm text-gray-400">Phnom Penh, Cambodia</p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto pt-8 text-center text-xs text-gray-500">
+            &copy; 2026 HONG Coffee. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Contact & FAQ JS -->
+    <script>
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('contact-name').value;
+            showToast(`✓ Thank you ${name}! Your message has been sent.`);
+            e.target.reset();
+        }
+
+        function toggleAccordion(btn) {
+            const content = btn.nextElementSibling;
+            const icon = btn.querySelector('i');
+            content.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+        }
+
+        // Cart & Toast Logic
+        let cart = JSON.parse(localStorage.getItem('hong_cart')) || [];
+        function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
+        function toggleCart() { document.getElementById('cart-modal').classList.toggle('hidden'); renderCart(); }
+        function updateCartBadge() { const b = document.getElementById('cart-badge'); if(b) b.textContent = cart.reduce((s, i) => s + i.qty, 0); }
+        function renderCart() {
+            const container = document.getElementById('cart-items-container');
+            const subtotalEl = document.getElementById('cart-subtotal');
+            const totalEl = document.getElementById('cart-total');
+            if(!container) return;
+            if(cart.length === 0) { container.innerHTML = `<p class="text-gray-500 text-center py-10">Your cart is empty.</p>`; subtotalEl.textContent = '$0.00'; totalEl.textContent = '$0.00'; return; }
+            let html = '', subtotal = 0;
+            cart.forEach(item => {
+                subtotal += item.price * item.qty;
+                html += `<div class="flex items-center gap-4 bg-coffee-50 dark:bg-coffee-800/40 p-3 rounded-2xl"><img src="${item.image}" class="w-16 h-16 object-cover rounded-xl"><div class="flex-1"><h4 class="font-serif font-bold text-sm">${item.name}</h4><div class="text-xs text-coffee-600">$${item.price.toFixed(2)} x ${item.qty}</div></div><button onclick="removeFromCart('${item.name}')" class="text-red-500"><i class="fa-solid fa-trash"></i></button></div>`;
+            });
+            container.innerHTML = html; subtotalEl.textContent = `$${subtotal.toFixed(2)}`; totalEl.textContent = `$${subtotal.toFixed(2)}`;
+        }
+        function removeFromCart(name) { cart = cart.filter(i => i.name !== name); localStorage.setItem('hong_cart', JSON.stringify(cart)); updateCartBadge(); renderCart(); }
+        function checkout() { alert('Order placed successfully!'); cart = []; localStorage.setItem('hong_cart', JSON.stringify(cart)); toggleCart(); updateCartBadge(); }
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            if(!container) return;
+            const toast = document.createElement('div');
+            toast.className = 'bg-coffee-900 text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 border border-coffee-300/40 text-sm';
+            toast.innerHTML = `<span class="text-coffee-300">☕</span> <span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        function toggleDarkMode() { document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); }
+        updateCartBadge();
+    </script>
+</body>
+</html>
