@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HONG Coffee — About Our Story & Values</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        coffee: {
+                            50: '#fdf8f5', 100: '#f9eee6', 200: '#f0d9cc',
+                            300: '#e2bc49', 600: '#8c533e', 800: '#4a2e1b',
+                            900: '#2c1810', dark: '#1a0e09',
+                        }
+                    },
+                    fontFamily: { sans: ['Poppins', 'sans-serif'], serif: ['Playfair Display', 'serif'] }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-coffee-50 dark:bg-coffee-dark text-coffee-900 dark:text-coffee-100 font-sans transition-colors duration-300">
+
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-3"></div>
+
+    <!-- Shopping Cart Modal -->
+    <div id="cart-modal" class="fixed inset-0 z-50 overflow-hidden hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity" onclick="toggleCart()"></div>
+        <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-white dark:bg-coffee-900 shadow-2xl flex flex-col">
+                <div class="p-6 border-b border-coffee-200 dark:border-coffee-800 flex items-center justify-between">
+                    <h2 class="text-xl font-serif font-bold text-coffee-800 dark:text-coffee-200"><i class="fa-solid fa-bag-shopping mr-2 text-coffee-300"></i> Your Cart</h2>
+                    <button onclick="toggleCart()" class="text-coffee-600 dark:text-coffee-300 text-xl font-bold">&times;</button>
+                </div>
+                <div id="cart-items-container" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
+                <div class="p-6 border-t border-coffee-200 dark:border-coffee-800 bg-coffee-50 dark:bg-coffee-dark/50">
+                    <div class="flex justify-between mb-2 text-sm"><span>Subtotal</span><span id="cart-subtotal">$0.00</span></div>
+                    <div class="flex justify-between mb-4 text-sm font-semibold"><span>Total</span><span id="cart-total" class="text-coffee-600 dark:text-coffee-300">$0.00</span></div>
+                    <button onclick="checkout()" class="w-full bg-coffee-800 hover:bg-coffee-900 text-white py-3 rounded-xl font-medium shadow-md">Proceed to Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-coffee-950/90 backdrop-blur-md py-4 px-6 md:px-12 flex items-center justify-between shadow-lg">
+        <a href="index.html" class="flex items-center gap-2 text-2xl font-serif font-bold tracking-wider text-white">
+            <span class="text-coffee-300 text-3xl">☕</span> HONG <span class="font-light text-coffee-200 text-lg">COFFEE</span>
+        </a>
+        <div class="hidden md:flex items-center gap-8 font-medium text-white">
+            <a href="index.html" class="hover:text-coffee-300 transition">Home</a>
+            <a href="about.html" class="text-coffee-300 transition">About</a>
+            <a href="menu.html" class="hover:text-coffee-300 transition">Menu</a>
+            <a href="products.html" class="hover:text-coffee-300 transition">Products</a>
+            <a href="contact.html" class="hover:text-coffee-300 transition">Contact</a>
+        </div>
+        <div class="flex items-center gap-4 text-white">
+            <button onclick="toggleDarkMode()" class="p-2 hover:bg-white/10 rounded-full transition"><i class="fa-solid fa-moon dark:text-coffee-300" id="theme-icon"></i></button>
+            <button onclick="toggleCart()" class="relative p-2 hover:bg-white/10 rounded-full transition">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="cart-badge" class="absolute -top-1 -right-1 bg-coffee-300 text-coffee-950 font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center">0</span>
+            </button>
+            <a href="menu.html" class="hidden sm:inline-block bg-coffee-300 text-coffee-950 px-5 py-2 rounded-full font-semibold shadow hover:bg-amber-400 transition">Order Now</a>
+            <button onclick="toggleMobileMenu()" class="md:hidden text-2xl p-2"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="fixed inset-0 z-50 bg-coffee-950/95 backdrop-blur-md flex flex-col items-center justify-center gap-6 text-xl text-white hidden">
+        <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-3xl text-coffee-300">&times;</button>
+        <a href="index.html" onclick="toggleMobileMenu()">Home</a>
+        <a href="about.html" onclick="toggleMobileMenu()" class="text-coffee-300">About</a>
+        <a href="menu.html" onclick="toggleMobileMenu()">Menu</a>
+        <a href="products.html" onclick="toggleMobileMenu()">Products</a>
+        <a href="contact.html" onclick="toggleMobileMenu()">Contact</a>
+    </div>
+
+    <!-- About Hero -->
+    <header class="pt-32 pb-16 px-6 max-w-7xl mx-auto text-center space-y-4">
+        <span class="text-coffee-600 dark:text-coffee-300 font-semibold text-sm uppercase tracking-wider">Our Story</span>
+        <h1 class="text-4xl sm:text-6xl font-serif font-bold text-coffee-900 dark:text-coffee-100">More Than Coffee.<br>It's a Feeling.</h1>
+        <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-base">Crafting memorable experiences one cup at a time in the heart of Phnom Penh.</p>
+    </header>
+
+    <!-- Large Coffee Shop Image Showcase -->
+    <section class="px-6 max-w-7xl mx-auto pb-16">
+        <div class="rounded-3xl overflow-hidden shadow-2xl h-96 sm:h-[500px]">
+            <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=1920" alt="HONG Coffee Shop Ambiance" class="w-full h-full object-cover">
+        </div>
+    </section>
+
+    <!-- Our Story Content & Mission/Vision -->
+    <section class="py-12 px-6 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div class="space-y-6">
+            <h2 class="text-3xl font-serif font-bold text-coffee-900 dark:text-coffee-100">The Journey of HONG Coffee</h2>
+            <p class="text-gray-600 dark:text-gray-300 leading-relaxed text-sm">
+                Founded in Phnom Penh, HONG Coffee was created to provide premium quality coffee in a warm, cozy, and professional environment. Whether you are looking for a tranquil space to study, a creative hub to work, or a comfortable corner to catch up with friends, our doors are always open.
+            </p>
+            <p class="text-gray-600 dark:text-gray-300 leading-relaxed text-sm">
+                We believe that great coffee starts long before it reaches your cup—from sustainably sourced highland beans to meticulous roasting profiles and master craftsmanship.
+            </p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="bg-white dark:bg-coffee-900 p-8 rounded-3xl shadow-sm border border-coffee-200 dark:border-coffee-800 space-y-3">
+                <div class="text-3xl text-coffee-600 dark:text-coffee-300 font-serif font-bold">01</div>
+                <h3 class="font-serif font-bold text-lg">Our Mission</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">“To serve high-quality coffee while creating a warm and welcoming experience for everyone.”</p>
+            </div>
+            <div class="bg-white dark:bg-coffee-900 p-8 rounded-3xl shadow-sm border border-coffee-200 dark:border-coffee-800 space-y-3">
+                <div class="text-3xl text-coffee-600 dark:text-coffee-300 font-serif font-bold">02</div>
+                <h3 class="font-serif font-bold text-lg">Our Vision</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">“To become a favorite coffee destination for coffee lovers in Cambodia.”</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Values -->
+    <section class="py-16 bg-coffee-100/50 dark:bg-coffee-900/30 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center space-y-3 mb-12">
+                <h2 class="text-3xl font-serif font-bold text-coffee-900 dark:text-coffee-100">Our Core Values</h2>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">The pillars that guide our daily craft.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white dark:bg-coffee-900 p-6 rounded-2xl shadow-sm border border-coffee-200 dark:border-coffee-800 text-center space-y-3">
+                    <div class="text-3xl text-coffee-300">🌟</div>
+                    <h3 class="font-bold text-lg">Quality</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Uncompromising standards in every harvest and roast.</p>
+                </div>
+                <div class="bg-white dark:bg-coffee-900 p-6 rounded-2xl shadow-sm border border-coffee-200 dark:border-coffee-800 text-center space-y-3">
+                    <div class="text-3xl text-coffee-300">🔥</div>
+                    <h3 class="font-bold text-lg">Passion</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Deep love for the art and science of coffee making.</p>
+                </div>
+                <div class="bg-white dark:bg-coffee-900 p-6 rounded-2xl shadow-sm border border-coffee-200 dark:border-coffee-800 text-center space-y-3">
+                    <div class="text-3xl text-coffee-300">🤝</div>
+                    <h3 class="font-bold text-lg">Customer First</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Ensuring every guest feels valued and cherished.</p>
+                </div>
+                <div class="bg-white dark:bg-coffee-900 p-6 rounded-2xl shadow-sm border border-coffee-200 dark:border-coffee-800 text-center space-y-3">
+                    <div class="text-3xl text-coffee-300">🎨</div>
+                    <h3 class="font-bold text-lg">Creativity</h3>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">Innovating new flavors and beverage experiences.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Coffee Process Timeline -->
+    <section class="py-20 px-6 max-w-7xl mx-auto">
+        <div class="text-center space-y-3 mb-16">
+            <span class="text-coffee-600 dark:text-coffee-300 font-semibold text-sm uppercase tracking-wider">From Seed to Cup</span>
+            <h2 class="text-3xl sm:text-4xl font-serif font-bold text-coffee-900 dark:text-coffee-100">Our Coffee Process</h2>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            <div class="bg-white dark:bg-coffee-900 p-6 rounded-2xl border border-coffee-200 dark:border-coffee-800 text-center space-y-3">
+                <span class="text-xs font-bold text-coffee-300 bg-coffee-800 px-3 py-1 rounded-full">01</span>
+                <h3 class="font-bold text-lg mt-2">Select Beans</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Handpicking only the finest Arabica and Robusta beans.</p>
+            </div>
+            <div class="bg-white dark:bg-coffee-900 p-6 rounded-2xl border border-coffee-200 dark:border-coffee-800 text-center space-y-3">
+                <span class="text-xs font-bold text-coffee-300 bg-coffee-800 px-3 py-1 rounded-full">02</span>
+                <h3 class="font-bold text-lg mt-2">Roast</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Expert roasting to bring out rich aromatic oils and profiles.</p>
+            </div>
+            <div class="bg-white dark:bg-coffee-900 p-6 rounded-2xl border border-coffee-200 dark:border-coffee-800 text-center space-y-3">
+                <span class="text-xs font-bold text-coffee-300 bg-coffee-800 px-3 py-1 rounded-full">03</span>
+                <h3 class="font-bold text-lg mt-2">Grind</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Precision grinding tailored for each brewing method.</p>
+            </div>
+            <div class="bg-white dark:bg-coffee-900 p-6 rounded-2xl border border-coffee-200 dark:border-coffee-800 text-center space-y-3">
+                <span class="text-xs font-bold text-coffee-300 bg-coffee-800 px-3 py-1 rounded-full">04</span>
+                <h3 class="font-bold text-lg mt-2">Brew</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Careful extraction with optimal temperature and pressure.</p>
+            </div>
+            <div class="bg-white dark:bg-coffee-900 p-6 rounded-2xl border border-coffee-200 dark:border-coffee-800 text-center space-y-3">
+                <span class="text-xs font-bold text-coffee-300 bg-coffee-800 px-3 py-1 rounded-full">05</span>
+                <h3 class="font-bold text-lg mt-2">Serve</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Presented with love and a smile to brighten your day.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="py-16 bg-coffee-100/50 dark:bg-coffee-900/30 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center space-y-3 mb-12">
+                <h2 class="text-3xl font-serif font-bold text-coffee-900 dark:text-coffee-100">Meet Our Experts</h2>
+                <p class="text-gray-600 dark:text-gray-400 text-sm">Passionate professionals behind your favorite cup.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white dark:bg-coffee-900 rounded-2xl overflow-hidden shadow-sm border border-coffee-200 dark:border-coffee-800 text-center pb-6">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=500" alt="Sok Visal" class="w-full h-64 object-cover mb-4">
+                    <h3 class="font-serif font-bold text-xl">Sok Visal</h3>
+                    <p class="text-xs text-coffee-600 dark:text-coffee-300 font-medium mb-3">Head Barista</p>
+                    <div class="flex justify-center gap-3 text-sm text-gray-500">
+                        <a href="#" class="hover:text-coffee-300"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="#" class="hover:text-coffee-300"><i class="fa-brands fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-coffee-900 rounded-2xl overflow-hidden shadow-sm border border-coffee-200 dark:border-coffee-800 text-center pb-6">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=500" alt="Chan Dara" class="w-full h-64 object-cover mb-4">
+                    <h3 class="font-serif font-bold text-xl">Chan Dara</h3>
+                    <p class="text-xs text-coffee-600 dark:text-coffee-300 font-medium mb-3">Coffee Specialist & Roaster</p>
+                    <div class="flex justify-center gap-3 text-sm text-gray-500">
+                        <a href="#" class="hover:text-coffee-300"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="#" class="hover:text-coffee-300"><i class="fa-brands fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-coffee-900 rounded-2xl overflow-hidden shadow-sm border border-coffee-200 dark:border-coffee-800 text-center pb-6">
+                    <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=500" alt="Bopha Rath" class="w-full h-64 object-cover mb-4">
+                    <h3 class="font-serif font-bold text-xl">Bopha Rath</h3>
+                    <p class="text-xs text-coffee-600 dark:text-coffee-300 font-medium mb-3">Store Manager</p>
+                    <div class="flex justify-center gap-3 text-sm text-gray-500">
+                        <a href="#" class="hover:text-coffee-300"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="#" class="hover:text-coffee-300"><i class="fa-brands fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="py-16 px-6 max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div class="bg-white dark:bg-coffee-900 p-8 rounded-3xl shadow-sm border border-coffee-200 dark:border-coffee-800">
+            <div class="text-4xl font-serif font-bold text-coffee-800 dark:text-coffee-300 mb-1">5+</div>
+            <div class="text-xs text-gray-500">Years Experience</div>
+        </div>
+        <div class="bg-white dark:bg-coffee-900 p-8 rounded-3xl shadow-sm border border-coffee-200 dark:border-coffee-800">
+            <div class="text-4xl font-serif font-bold text-coffee-800 dark:text-coffee-300 mb-1">20K+</div>
+            <div class="text-xs text-gray-500">Happy Customers</div>
+        </div>
+        <div class="bg-white dark:bg-coffee-900 p-8 rounded-3xl shadow-sm border border-coffee-200 dark:border-coffee-800">
+            <div class="text-4xl font-serif font-bold text-coffee-800 dark:text-coffee-300 mb-1">30+</div>
+            <div class="text-xs text-gray-500">Coffee Products</div>
+        </div>
+        <div class="bg-white dark:bg-coffee-900 p-8 rounded-3xl shadow-sm border border-coffee-200 dark:border-coffee-800">
+            <div class="text-4xl font-serif font-bold text-coffee-800 dark:text-coffee-300 mb-1">4.9</div>
+            <div class="text-xs text-gray-500">Customer Rating</div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-coffee-950 text-white pt-16 pb-8 px-6 border-t border-coffee-800">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-coffee-900">
+            <div class="space-y-4">
+                <a href="index.html" class="text-2xl font-serif font-bold tracking-wider flex items-center gap-2">
+                    <span class="text-coffee-300 text-3xl">☕</span> HONG <span class="font-light text-coffee-200 text-lg">COFFEE</span>
+                </a>
+                <p class="text-gray-400 text-sm leading-relaxed">“Brewed with Passion, Served with Love.”</p>
+            </div>
+            <div>
+                <h4 class="font-serif font-bold text-lg mb-4 text-coffee-300">Quick Links</h4>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li><a href="index.html" class="hover:text-coffee-300 transition">Home</a></li>
+                    <li><a href="about.html" class="hover:text-coffee-300 transition">About Us</a></li>
+                    <li><a href="menu.html" class="hover:text-coffee-300 transition">Menu</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-serif font-bold text-lg mb-4 text-coffee-300">Opening Hours</h4>
+                <p class="text-sm text-gray-400">Mon – Sun: 7:00 AM – 9:00 PM</p>
+            </div>
+            <div>
+                <h4 class="font-serif font-bold text-lg mb-4 text-coffee-300">Location</h4>
+                <p class="text-sm text-gray-400">Phnom Penh, Cambodia</p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto pt-8 text-center text-xs text-gray-500">
+            &copy; 2026 HONG Coffee. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- JS Core -->
+    <script>
+        function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
+        let cart = JSON.parse(localStorage.getItem('hong_cart')) || [];
+        function toggleCart() { document.getElementById('cart-modal').classList.toggle('hidden'); renderCart(); }
+        function updateCartBadge() { const b = document.getElementById('cart-badge'); if(b) b.textContent = cart.reduce((s, i) => s + i.qty, 0); }
+        function renderCart() {
+            const container = document.getElementById('cart-items-container');
+            const subtotalEl = document.getElementById('cart-subtotal');
+            const totalEl = document.getElementById('cart-total');
+            if (!container) return;
+            if (cart.length === 0) { container.innerHTML = `<p class="text-gray-500 text-center py-10">Your cart is empty.</p>`; subtotalEl.textContent = '$0.00'; totalEl.textContent = '$0.00'; return; }
+            let html = '', subtotal = 0;
+            cart.forEach(item => {
+                subtotal += item.price * item.qty;
+                html += `<div class="flex items-center gap-4 bg-coffee-50 dark:bg-coffee-800/40 p-3 rounded-2xl"><img src="${item.image}" class="w-16 h-16 object-cover rounded-xl"><div class="flex-1"><h4 class="font-serif font-bold text-sm">${item.name}</h4><div class="text-xs text-coffee-600">$${item.price.toFixed(2)} x ${item.qty}</div></div><button onclick="removeFromCart('${item.name}')" class="text-red-500"><i class="fa-solid fa-trash"></i></button></div>`;
+            });
+            container.innerHTML = html; subtotalEl.textContent = `$${subtotal.toFixed(2)}`; totalEl.textContent = `$${subtotal.toFixed(2)}`;
+        }
+        function removeFromCart(name) { cart = cart.filter(i => i.name !== name); localStorage.setItem('hong_cart', JSON.stringify(cart)); updateCartBadge(); renderCart(); }
+        function checkout() { alert('Order placed successfully!'); cart = []; localStorage.setItem('hong_cart', JSON.stringify(cart)); toggleCart(); updateCartBadge(); }
+        function toggleDarkMode() { document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); }
+        updateCartBadge();
+    </script>
+</body>
+</html>
